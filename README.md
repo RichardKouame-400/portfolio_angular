@@ -82,7 +82,7 @@ python -m venv .venv
 pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
-Get-Content api/seed.py | python manage.py shell
+python api/seed.py
 python manage.py runserver
 ```
 
@@ -95,7 +95,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
-python manage.py shell < api/seed.py
+python api/seed.py
 python manage.py runserver
 ```
 

@@ -33,7 +33,7 @@ if ($Setup) {
     python manage.py migrate
 
     Write-Host "🌱 Injection des données de seed..."
-    Get-Content api/seed.py | python manage.py shell
+    python api/seed.py
 }
 
 Write-Host "🚀 Démarrage du backend Django sur http://localhost:8000"
