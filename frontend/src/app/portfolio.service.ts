@@ -19,7 +19,7 @@ import {
 export class PortfolioService {
 
   // URL de base de l'API Django (à modifier en production, ex: environment.apiUrl)
-  private readonly API_BASE = 'http://localhost:8000/api';
+  private readonly API_BASE = 'https://akarichard12.pythonanywhere.com/api';
 
   // État réactif du profil chargé, permet aux composants de s'y abonner sans refaire de requête
   private profilSubject = new BehaviorSubject<Utilisateur | null>(null);
