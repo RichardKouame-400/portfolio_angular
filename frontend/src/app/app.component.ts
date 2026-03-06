@@ -31,14 +31,11 @@ import { PortfolioService } from './portfolio.service';
   ],
   template: `
     <div class="portfolio-root">
-      <!-- Curseur personnalisé -->
       <div class="cursor" id="cursor"></div>
       <div class="cursor-ring" id="cursorRing"></div>
 
-      <!-- Navigation fixe -->
       <app-nav></app-nav>
 
-      <!-- Sections -->
       <main>
         <app-hero id="home"></app-hero>
         <app-about id="about"></app-about>
@@ -49,7 +46,6 @@ import { PortfolioService } from './portfolio.service';
         <app-contact id="contact"></app-contact>
       </main>
 
-      <!-- Footer -->
       <footer class="footer">
         <div class="footer-copy">
           © {{ currentYear }} <strong>Kouame Aka Richard</strong> — Tous droits réservés
@@ -59,7 +55,7 @@ import { PortfolioService } from './portfolio.service';
     </div>
   `,
   styles: [`
-    .portfolio-root { background: #080808; min-height: 100vh; }
+    .portfolio-root { background: #080808; min-height: 100vh; overflow-x: hidden; }
     .footer {
       border-top: 1px solid #1e1e1e;
       padding: 2rem 5%;
@@ -81,6 +77,8 @@ import { PortfolioService } from './portfolio.service';
       font-family: 'DM Sans', sans-serif;
     }
     .footer-back:hover { color: #c8f04b; }
+    
+    /* Styles du curseur personnalisé */
     .cursor {
       position: fixed; width: 10px; height: 10px;
       background: #c8f04b; border-radius: 50%;
@@ -93,7 +91,11 @@ import { PortfolioService } from './portfolio.service';
       border: 1.5px solid #c8f04b; border-radius: 50%;
       pointer-events: none; z-index: 9998;
       transform: translate(-50%, -50%);
-      transition: all 0.15s ease; opacity: .5;
+      transition: left 0.15s ease, top 0.15s ease; opacity: .5;
+    }
+    /* Masquer le curseur personnalisé sur les petits écrans / tactiles */
+    @media (max-width: 900px) {
+      .cursor, .cursor-ring { display: none; }
     }
   `]
 })
@@ -108,7 +110,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     // Charger le profil complet au démarrage
     this.portfolioService.getUtilisateurComplet(1).subscribe({
       next: profil => console.log('Profil chargé :', profil.nom_complet),
-      error: err => console.warn('API non disponible, mode statique', err)
+      error: err => console.warn('API non disponible, le site fonctionne en mode données de secours', err)
     });
   }
 
@@ -122,10 +124,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (!this.cursorEl || !this.cursorRingEl) {
       return;
     }
-
     const { clientX, clientY } = event;
+    
+    // Positionnement sans décalage pour le curseur principal
     this.cursorEl.style.left = `${clientX}px`;
     this.cursorEl.style.top = `${clientY}px`;
+    
+    // Positionnement avec un léger effet de retard pour l'anneau (géré par la transition CSS)
     this.cursorRingEl.style.left = `${clientX}px`;
     this.cursorRingEl.style.top = `${clientY}px`;
   }

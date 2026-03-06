@@ -159,12 +159,13 @@ export class ProjectsComponent implements OnInit {
   ngOnInit(): void {
     this.loading = true;
     this.portfolioService.getProjets().subscribe({
-      next: projets => {
+      next: (projets) => {
         this.projets = projets;
         this.projetsFiltres = projets;
         this.loading = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('API non disponible, utilisation des données de secours :', err);
         this.projets = this.getFallbackProjets();
         this.projetsFiltres = this.projets;
         this.loading = false;
@@ -183,58 +184,79 @@ export class ProjectsComponent implements OnInit {
     return this.filtreActif === 'all' || projet.categorie === this.filtreActif;
   }
 
-  getLabelCategorie(cat: string): string {
+  getLabelCategorie(cat: CategorieProjet | string): string {
     const labels: Record<string, string> = {
-      fullstack: 'Full-Stack', backend: 'Backend', frontend: 'Frontend',
-      data: 'Data & ML', odoo: 'Odoo / ERP', mobile: 'Mobile', autre: 'Autre'
+      fullstack: 'Full-Stack', 
+      backend: 'Backend', 
+      frontend: 'Frontend',
+      data: 'Data & ML', 
+      odoo: 'Odoo / ERP', 
+      mobile: 'Mobile', 
+      autre: 'Autre'
     };
-    return labels[cat] || cat;
+    return labels[cat as string] || cat;
   }
 
-  getImgStyle(cat: string): Record<string, string> {
+  getImgStyle(cat: CategorieProjet | string): Record<string, string> {
     const styles: Record<string, string> = {
       fullstack: 'linear-gradient(135deg,#141414,#1a1a1a)',
       backend: 'linear-gradient(135deg,#141414,#1c1a14)',
       odoo: 'linear-gradient(135deg,#12141c,#1a1c28)',
       data: 'linear-gradient(135deg,#101418,#141820)',
     };
-    return { background: styles[cat] || 'linear-gradient(135deg,#141414,#1a1a1a)' };
+    return { background: styles[cat as string] || 'linear-gradient(135deg,#141414,#1a1a1a)' };
   }
 
   private getFallbackProjets(): Projet[] {
     return [
       {
-        id: 1, titre: 'Parc-IT — Gestion de Parc Informatique',
+        id: 1, 
+        titre: 'Parc-IT — Gestion de Parc Informatique',
         description_courte: 'Module Odoo 18.0 complet pour la gestion de parc informatique d\'entreprise.',
-        categorie: 'odoo', statut: 'termine',
+        categorie: 'odoo', 
+        statut: 'termine',
         technologies: ['Python', 'Odoo 18', 'SCSS', 'JavaScript', 'PostgreSQL'],
         url_github: 'https://github.com/RichardKouame-400/Parc-IT',
-        en_vedette: true, ordre: 1, date_creation: '2024-01-01',
+        en_vedette: true, 
+        ordre: 1, 
+        date_creation: '2024-01-01',
         icone_categorie: '🏢'
       },
       {
-        id: 2, titre: 'projet-school-online',
+        id: 2, 
+        titre: 'projet-school-online',
         description_courte: 'Application de gestion scolaire avec architecture UML complète et wireframes Figma.',
-        categorie: 'fullstack', statut: 'en_cours',
+        categorie: 'fullstack', 
+        statut: 'en_cours',
         technologies: ['Django', 'Angular', 'PostgreSQL', 'UML', 'Figma'],
         url_github: 'https://github.com/RichardKouame-400/pojet-school-online',
-        en_vedette: true, ordre: 2, date_creation: '2024-06-01',
+        en_vedette: true, 
+        ordre: 2, 
+        date_creation: '2024-06-01',
         icone_categorie: '🎓'
       },
       {
-        id: 3, titre: 'Plateforme Marchés Publics & Privés',
+        id: 3, 
+        titre: 'Plateforme Marchés Publics & Privés',
         description_courte: 'Plateforme de dématérialisation du cycle de vie des marchés publics (Projet L3).',
-        categorie: 'fullstack', statut: 'en_cours',
+        categorie: 'fullstack', 
+        statut: 'en_cours',
         technologies: ['Django', 'Angular', 'PostgreSQL', 'REST API', 'JWT'],
-        en_vedette: true, ordre: 3, date_creation: '2025-01-01',
+        en_vedette: true, 
+        ordre: 3, 
+        date_creation: '2025-01-01',
         icone_categorie: '📋'
       },
       {
-        id: 4, titre: 'Portfolio Django / Angular',
+        id: 4, 
+        titre: 'Portfolio Django / Angular',
         description_courte: '52 fichiers, 6 modèles, 16 endpoints REST, 9 composants Angular standalone.',
-        categorie: 'fullstack', statut: 'termine',
+        categorie: 'fullstack', 
+        statut: 'termine',
         technologies: ['Django', 'Angular', 'TypeScript', 'Python', 'DRF'],
-        en_vedette: false, ordre: 4, date_creation: '2025-02-01',
+        en_vedette: false, 
+        ordre: 4, 
+        date_creation: '2025-02-01',
         icone_categorie: '💼'
       },
     ];

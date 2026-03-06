@@ -19,7 +19,6 @@ import { Experience } from '../../types';
         <h2 class="section-title">Formation & Expérience</h2>
       </div>
       <div class="exp-grid">
-        <!-- Formation -->
         <div class="exp-column">
           <div class="column-title">🎓 Formation</div>
           <div class="timeline">
@@ -34,7 +33,6 @@ import { Experience } from '../../types';
           </div>
         </div>
 
-        <!-- Expériences pro & projets -->
         <div class="exp-column">
           <div class="column-title">💼 Expériences</div>
           <div class="timeline">
@@ -109,18 +107,23 @@ export class ExperiencesComponent implements OnInit {
   constructor(private portfolioService: PortfolioService) {}
 
   ngOnInit(): void {
+    // Récupérer les formations
     this.portfolioService.getExperiences('education').subscribe({
-      next: f => this.formations = f,
+      next: (f) => this.formations = f,
       error: () => this.formations = this.getFallbackFormations()
     });
 
+    // Récupérer les expériences pros
     this.portfolioService.getExperiences('professionnel').subscribe({
-      next: p => {
-        // Ajouter aussi les projets et compétitions
+      next: (p) => {
+        // Ajouter aussi les projets
         this.portfolioService.getExperiences('projet').subscribe({
-          next: proj => {
+          next: (proj) => {
+            // Ajouter aussi les compétitions
             this.portfolioService.getExperiences('competition').subscribe({
-              next: comp => this.professionnels = [...p, ...proj, ...comp].sort((a, b) => b.ordre - a.ordre),
+              next: (comp) => {
+                this.professionnels = [...p, ...proj, ...comp].sort((a, b) => b.ordre - a.ordre);
+              },
               error: () => this.professionnels = [...p, ...proj]
             });
           },

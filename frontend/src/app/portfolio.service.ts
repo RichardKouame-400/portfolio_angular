@@ -6,7 +6,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
 import {
   Utilisateur, UtilisateurList, Projet, Experience,
   Service, PriseDeContact, PriseDeContactResponse,
@@ -18,9 +18,10 @@ import {
 })
 export class PortfolioService {
 
+  // URL de base de l'API Django (à modifier en production, ex: environment.apiUrl)
   private readonly API_BASE = 'http://localhost:8000/api';
 
-  // État réactif du profil chargé
+  // État réactif du profil chargé, permet aux composants de s'y abonner sans refaire de requête
   private profilSubject = new BehaviorSubject<Utilisateur | null>(null);
   profil$ = this.profilSubject.asObservable();
 
@@ -38,7 +39,7 @@ export class PortfolioService {
     return this.http.get<UtilisateurList>(`${this.API_BASE}/utilisateurs/${id}/`);
   }
 
-  /** GET /api/utilisateurs/<id>/complet/ — Profil complet avec nested */
+  /** GET /api/utilisateurs/<id>/complet/ — Profil complet avec relations imbriquées (nested) */
   getUtilisateurComplet(id: number = 1): Observable<Utilisateur> {
     return this.http.get<Utilisateur>(`${this.API_BASE}/utilisateurs/${id}/complet/`).pipe(
       tap(profil => this.profilSubject.next(profil))
@@ -65,12 +66,14 @@ export class PortfolioService {
   /** GET /api/projets/ avec filtres optionnels */
   getProjets(categorie?: CategorieProjet | 'all', vedette?: boolean): Observable<Projet[]> {
     let params = new HttpParams();
+    
     if (categorie && categorie !== 'all') {
       params = params.set('categorie', categorie);
     }
     if (vedette !== undefined) {
       params = params.set('vedette', String(vedette));
     }
+    
     return this.http.get<Projet[]>(`${this.API_BASE}/projets/`, { params });
   }
 
@@ -99,7 +102,9 @@ export class PortfolioService {
   /** GET /api/experiences/?type=education|professionnel... */
   getExperiences(type?: string): Observable<Experience[]> {
     let params = new HttpParams();
-    if (type) params = params.set('type', type);
+    if (type) {
+      params = params.set('type', type);
+    }
     return this.http.get<Experience[]>(`${this.API_BASE}/experiences/`, { params });
   }
 

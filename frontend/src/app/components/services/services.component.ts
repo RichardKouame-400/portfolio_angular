@@ -89,7 +89,7 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.portfolioService.getServices().subscribe({
-      next: services => this.services = services,
+      next: (services) => this.services = services,
       error: () => this.services = this.getFallbackServices()
     });
   }

@@ -56,13 +56,11 @@ import { Utilisateur } from '../../types';
       </div>
     </section>
 
-    <!-- Marquee animé -->
     <div class="marquee-section">
       <div class="marquee-track">
         <span class="marquee-item" *ngFor="let item of marqueeItems">
           <span class="marquee-dot"></span>{{ item }}
         </span>
-        <!-- Duplicate pour boucle seamless -->
         <span class="marquee-item" *ngFor="let item of marqueeItems">
           <span class="marquee-dot"></span>{{ item }}
         </span>
@@ -220,6 +218,7 @@ export class HeroComponent implements OnInit {
   constructor(private portfolioService: PortfolioService) {}
 
   ngOnInit(): void {
+    // Écoute les changements du BehaviorSubject pour mettre à jour le profil dynamiquement
     this.portfolioService.profil$.subscribe(p => this.profil = p);
   }
 

@@ -30,7 +30,6 @@ interface NavLink {
       </button>
     </nav>
 
-    <!-- Menu mobile -->
     <div class="mobile-menu" [class.open]="menuOpen">
       <ul>
         <li *ngFor="let link of navLinks">
@@ -59,7 +58,7 @@ interface NavLink {
       width: 0; height: 2px; background: #c8f04b; transition: width .3s;
     }
     .nav-logo:hover::after { width: 100%; }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; margin: 0; padding: 0; }
     .nav-links a {
       color: #6b6b6b; text-decoration: none; font-size: .8rem;
       font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
@@ -83,7 +82,7 @@ interface NavLink {
       transform: translateY(-100%); transition: transform .4s ease;
     }
     .mobile-menu.open { transform: translateY(0); }
-    .mobile-menu ul { list-style: none; text-align: center; }
+    .mobile-menu ul { list-style: none; text-align: center; padding: 0; }
     .mobile-menu li { padding: 1.5rem 0; }
     .mobile-menu a {
       font-family: 'Bebas Neue', sans-serif; font-size: 3rem;
@@ -114,7 +113,7 @@ export class NavComponent implements OnInit {
   onScroll(): void {
     this.isScrolled = window.scrollY > 50;
 
-    // Active section detection
+    // Détection de la section active pour le scroll spy
     const sections = ['home', 'about', 'skills', 'services', 'projects', 'experiences', 'contact'];
     for (const id of [...sections].reverse()) {
       const el = document.getElementById(id);

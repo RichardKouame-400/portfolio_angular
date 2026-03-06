@@ -14,7 +14,6 @@ import { Utilisateur, StatProfil } from '../../types';
   imports: [CommonModule],
   template: `
     <section class="about reveal-section">
-      <!-- Colonne gauche -->
       <div class="about-left">
         <span class="section-label">À propos</span>
         <h2 class="section-title">Qui suis-je ?</h2>
@@ -29,7 +28,6 @@ import { Utilisateur, StatProfil } from '../../types';
         </div>
       </div>
 
-      <!-- Colonne droite -->
       <div class="about-right">
         <p *ngFor="let para of bioParagraphs">{{ para }}</p>
         <div class="about-actions">
@@ -121,15 +119,17 @@ export class AboutComponent implements OnInit {
         this.stats[0].valeur = p.annees_experience + '+';
         this.stats[1].valeur = p.nombre_projets + '+';
         this.bioParagraphs = p.bio.split('\n').filter(s => s.trim());
+      } else {
+        this.setFallbackBio();
       }
     });
+  }
 
-    if (!this.profil) {
-      this.bioParagraphs = [
-        "Je suis Kouame Aka Richard, étudiant en troisième année de Computer Science, animé par une profonde curiosité pour le développement logiciel et l'intelligence artificielle.",
-        "J'ai développé une expertise solide en développement web full-stack avec Django et Angular, en conception d'APIs RESTful, en modélisation de données et en développement d'ERP avec Odoo 18.",
-        "Ma démarche : concevoir des logiciels propres, scalables et bien documentés. Je cherche des stages ou collaborations pour mettre mes compétences en pratique.",
-      ];
-    }
+  private setFallbackBio(): void {
+    this.bioParagraphs = [
+      "Je suis Kouame Aka Richard, étudiant en troisième année de Computer Science, animé par une profonde curiosité pour le développement logiciel et l'intelligence artificielle.",
+      "J'ai développé une expertise solide en développement web full-stack avec Django et Angular, en conception d'APIs RESTful, en modélisation de données et en développement d'ERP avec Odoo 18.",
+      "Ma démarche : concevoir des logiciels propres, scalables et bien documentés. Je cherche des stages ou collaborations pour mettre mes compétences en pratique.",
+    ];
   }
 }

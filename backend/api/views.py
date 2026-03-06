@@ -7,6 +7,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .models import (
     Utilisateur, Projet, Experience, Service,
@@ -143,9 +145,38 @@ class PriseDeContactListCreateView(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        
         # Capturer l'IP
         ip = request.META.get('REMOTE_ADDR')
-        serializer.save(ip_address=ip)
+        contact = serializer.save(ip_address=ip) # On sauvegarde et on récupère l'objet
+        
+        # --- ENVOI DE L'EMAIL ---
+        try:
+            sujet_mail = f"Nouveau contact Portfolio : {contact.sujet or 'Sans sujet'}"
+            message_mail = f"""
+Nouveau message depuis ton portfolio !
+
+Nom : {contact.nom}
+Email : {contact.email}
+Sujet : {contact.sujet}
+
+Message :
+{contact.message}
+            """
+            
+            # Utilise une adresse par défaut si non définie dans settings
+            destinataire = getattr(settings, 'CONTACT_EMAIL', 'richard.kouame@email.com')
+            
+            send_mail(
+                subject=sujet_mail,
+                message=message_mail,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[destinataire],
+                fail_silently=True, # Mis à True pour ne pas faire planter l'API si l'email échoue
+            )
+        except Exception as e:
+            print(f"Erreur d'envoi d'email : {e}")
+
         return Response(
             {'message': 'Message envoyé avec succès. Merci !', 'data': serializer.data},
             status=status.HTTP_201_CREATED
